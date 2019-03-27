@@ -15,7 +15,7 @@ module.exports = function(app, db) {
 
     });
 
-    // GET
+    // GET with id
     app.get('/todo/:id', (req, res) => {
         const id = req.params.id;
         const details = {'_id': new ObjectID(id)};
@@ -24,6 +24,17 @@ module.exports = function(app, db) {
                 res.send(err);
             } else {
                 res.send(item);
+            }
+        });
+    });
+
+    // GET all
+    app.get('/todo', (req, res) => {
+        db.collection('todos').find({}).toArray((err, result) => {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send(result);
             }
         });
     });
