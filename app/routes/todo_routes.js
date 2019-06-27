@@ -1,93 +1,21 @@
 var ObjectID = require('mongodb').ObjectID;
+const todo = require('../controllers/todo.js');
 
-module.exports = function(app, db) {
+module.exports = function(app) {
     // POST
-    app.post('/todo', (req, res) => {
-        console.log(req.body);
-        const todo = {title: req.body.title, description: req.body.description};
-        db.collection('todos').insert(todo, (err, result) => {
-            if(err) {
-                res.send(err);
-            } else {
-                res.send(result.ops[0]);
-            }
-        });
-
-    });
-
+    app.post('/todo', todo.postTodo);
     // GET with id
-    app.get('/todo/:id', (req, res) => {
-        const id = req.params.id;
-        const details = {'_id': new ObjectID(id)};
-        db.collection('todos').findOne(details, (err, item) => {
-            if(err) {
-                res.send(err);
-            } else {
-                res.send(item);
-            }
-        });
-    });
+    app.get('/todo/:id', todo.getTodoWithId);
 
     // GET all
-    app.get('/todo', (req, res) => {
-        db.collection('todos').find({}).toArray((err, result) => {
-            if (err) {
-                res.send(err);
-            } else {
-                res.send(result);
-            }
-        });
-    });
+    app.get('/todo', todo.getTodo);
 
     // UPDATE
 
-    app.put('/todo/:id', (req, res) => {
-        const id = req.params.id;
-        const details = {'_id': new ObjectID(id)};
-        var todo = null;
-        db.collection('todos').findOne(details, (err, item) => {
-            if(err) {
-                res.send(err);
-            } else {
-                todo = item;
-            }
-
-            for (var itemsFromBodyIndex in req.body) {
-                if (req.body.hasOwnProperty(itemsFromBodyIndex)) {
-                    console.log(req.body[itemsFromBodyIndex]);
-
-                    if(req.body[itemsFromBodyIndex] != null){
-                        todo[itemsFromBodyIndex] = req.body[itemsFromBodyIndex];
-                    }
-
-                }
-            }
-
-            db.collection('todos').update(details, todo, (err, item) => {
-                if (err) {
-                    res.send(err);
-                } else {
-                    res.send(item);
-                }
-            });
-        });
-
-
-
-    });
+    app.put('/todo/:id', todo.putTodo);
 
     // DELETE
 
-    app.delete('/todo/:id', (req, res) => {
-        const id = req.params.id;
-        const details = {'_id': new ObjectID(id)};
-        db.collection('todos').remove(details, (err, item) => {
-            if(err) {
-                res.send(err);
-            } else {
-                res.send('Deleted todo with id: ' + id);
-            }
-        });
-    });
+    app.delete('/todo/:id', todo.deleteTodo);
 
 };

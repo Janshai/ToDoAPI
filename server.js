@@ -1,22 +1,31 @@
 const express        = require('express');
-const MongoClient    = require('mongodb').MongoClient;
 const bodyParser     = require('body-parser');
-const db             = require('./config/db.js');
+const config         = require('config');
+const mongoose       = require('mongoose');
+
+let options = {
+                useMongoClient: true,
+                useNewUrlParser: true,
+
+              };
 
 const app            = express();
 
 const port = 8000;
 
-app.use(bodyParser.urlencoded({ extended: true }));
+mongoose.connect(config.DBHost, options);
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.text());
+app.use(bodyParser.json({ type: 'application/json'}));
 
 
-MongoClient.connect(db.url, (err, database) => {
+require('./app/routes/index.js')(app);
 
-    if (err) return console.log(err);
-    const datab = database.db('todo-api');
-    require('./app/routes/index.js')(app, datab);
+app.listen(port)
+console.log("We are live");
 
-    app.listen(port, () => {
-        console.log("We are live");
-    });
-});
+module.exports = {app};
