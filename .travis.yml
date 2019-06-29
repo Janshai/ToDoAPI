@@ -1,5 +1,8 @@
 language: node_js
+    - "11"
 os: osx
+before_install:
+    - npm i -g npm@6.9.0
 before_script:
     - date
     - uname -a
