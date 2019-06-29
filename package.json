@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "test": "mocha --timeout 10000",
+    "dev": "SET_NODE_ENV=dev && nodemon server.js",
+    "start": "SET_NODE_ENV=prod && node server.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "chai-http": "^4.3.0",
     "js-yaml": "^3.13.1",
     "mocha": "^6.1.4",
+    "mongodb-memory-server": "^5.1.5",
     "nodemon": "^1.19.1"
   }
 }
