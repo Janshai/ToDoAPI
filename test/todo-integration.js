@@ -32,7 +32,6 @@ describe('Todos', () => {
             it('Returns a 200 response, an ID, and the database stores the Todo correctly', () => {
                 const input = {
                     title: 'Test',
-                    description: 'A test todo'
                 };
                 var id = 0;
                 return chai.request(app)
@@ -48,7 +47,6 @@ describe('Todos', () => {
                         expect(result).to.have.lengthOf(1);
                         const item = result[0];
                         expect(item.title).to.be.equal(input.title);
-                        expect(item.description).to.be.equal(input.description);
                         expect(item._id.toString()).to.be.equal(id);
 
                     });
@@ -61,48 +59,47 @@ describe('Todos', () => {
             })
         });
 
-        describe('With no title (a required field)', () => {
-            it('Returns a 400 response, an error message and no data is added to the database', () => {
-                const input = {
-                    description: 'A test todo'
-                };
-                return chai.request(app)
-                    .post('/todo')
-                    .send(input)
-                    .then(response => {
-                        expect(response).to.have.status(400);
-                        expect(response.body).to.have.property('errors');
-                        return ToDo.find(input);
-                    })
-                    .then(result => {
-                        expect(result).to.have.lengthOf(0);
-                    })
-            });
-        });
-        describe('With no description (an optional field)', () => {
-            it('Returns a 200 response, an ID, and the database stores the Todo correctly', () => {
-                const input = {
-                    title: 'Test'
-                };
-                var id = 0;
-                return chai.request(app)
-                    .post('/todo')
-                    .send(input)
-                    .then(response => {
-                        expect(response).to.have.status(200);
-                        expect(response.body).to.have.property('_id');
-                        id = response.body._id;
-                        return ToDo.find(input);
-                    })
-                    .then(result => {
-                        expect(result).to.have.lengthOf(1);
-                        const item = result[0];
-                        expect(item.title).to.be.equal(input.title);
-                        expect(item._id.toString()).to.be.equal(id);
-
-                    });
-            });
-        });
+        // describe('With no title (a required field)', () => {
+        //     it('Returns a 400 response, an error message and no data is added to the database', () => {
+        //         const input = {
+        //         };
+        //         return chai.request(app)
+        //             .post('/todo')
+        //             .send(input)
+        //             .then(response => {
+        //                 expect(response).to.have.status(400);
+        //                 expect(response.body).to.have.property('errors');
+        //                 return ToDo.find(input);
+        //             })
+        //             .then(result => {
+        //                 expect(result).to.have.lengthOf(0);
+        //             })
+        //     });
+        // });
+        // describe('With no X (an optional field)', () => {
+        //     it('Returns a 200 response, an ID, and the database stores the Todo correctly', () => {
+        //         const input = {
+        //             title: 'Test'
+        //         };
+        //         var id = 0;
+        //         return chai.request(app)
+        //             .post('/todo')
+        //             .send(input)
+        //             .then(response => {
+        //                 expect(response).to.have.status(200);
+        //                 expect(response.body).to.have.property('_id');
+        //                 id = response.body._id;
+        //                 return ToDo.find(input);
+        //             })
+        //             .then(result => {
+        //                 expect(result).to.have.lengthOf(1);
+        //                 const item = result[0];
+        //                 expect(item.title).to.be.equal(input.title);
+        //                 expect(item._id.toString()).to.be.equal(id);
+        //
+        //             });
+        //     });
+        // });
 
     });
 
@@ -145,8 +142,8 @@ describe('Todos', () => {
         describe('Update a todo that exists', () => {
             describe('With all fields given', () => {
                 it('Returns a 200 response, and the todo in the database matches the input', (done) => {
-                    let originalTodo = new ToDo({ title: 'Original title', description: 'original Description'});
-                    let updatedTodo = { title: 'Updated title', description: 'updated Description'};
+                    let originalTodo = new ToDo({ title: 'Original title'});
+                    let updatedTodo = { title: 'Updated title'};
                     originalTodo.save((err, todo) => {
                         return chai.request(app)
                             .put('/todo/' + todo.id.toString())
@@ -157,35 +154,33 @@ describe('Todos', () => {
                             })
                             .then(result => {
                                 expect(result.title).to.be.equal(updatedTodo.title);
-                                expect(result.description).to.be.equal(updatedTodo.description)
                                 done();
                             })
 
                     });
                 });
             });
-            describe('With some fields missing', () => {
-                it('Returns a 200 response, and the todo in the database combines the new values with pre-existing values', (done) => {
-                    let originalTodo = new ToDo({ title: 'Original title', description: 'original Description'});
-                    let updatedTodo = {description: 'updated Description'};
-                    originalTodo.save((err, todo) => {
-                        return chai.request(app)
-                            .put('/todo/' + todo.id.toString())
-                            .send(updatedTodo)
-                            .then(response => {
-                                expect(response).to.have.status(200);
-                                return ToDo.findById(todo.id);
-                            })
-                            .then(result => {
-                                expect(result.title).to.be.equal(originalTodo.title);
-                                expect(result.description).to.be.equal(updatedTodo.description)
-                                done();
-                            })
-                        });
-
-                    });
-                });
-            });
+            // describe('With some fields missing', () => {
+            //     it('Returns a 200 response, and the todo in the database combines the new values with pre-existing values', (done) => {
+            //         let originalTodo = new ToDo({ title: 'Original title'});
+            //         let updatedTodo = {};
+            //         originalTodo.save((err, todo) => {
+            //             return chai.request(app)
+            //                 .put('/todo/' + todo.id.toString())
+            //                 .send(updatedTodo)
+            //                 .then(response => {
+            //                     expect(response).to.have.status(200);
+            //                     return ToDo.findById(todo.id);
+            //                 })
+            //                 .then(result => {
+            //                     expect(result.title).to.be.equal(originalTodo.title);
+            //                     done();
+            //                 })
+            //             });
+            //
+            //         });
+            //     });
+            // });
             describe('With incorrect types', () => {
                 it('This is not currently possible', () => {
                     expect(true).to.be.equal(true);
@@ -224,9 +219,9 @@ describe('Todos', () => {
 
             describe('When there are some todos', () => {
                 it('it should return an array of todos', () => {
-                    let todos = [{ title: 'todo 1', description: 'first todo'},
-                                 { title: 'todo 2', description: 'second todo'},
-                                 { title: 'todo 3', description: 'third todo'}];
+                    let todos = [{ title: 'todo 1'},
+                                 { title: 'todo 2'},
+                                 { title: 'todo 3'}];
                     ToDo.collection.insertMany(todos, (err, docs) =>{
                         chai.request(server)
                         .get('/todo')
@@ -245,7 +240,7 @@ describe('Todos', () => {
         describe('Get todos with id', () => {
             describe('An id that exists', () => {
                 it('Returns a 200 status and the correct todo', () => {
-                    let todo = new ToDo({title: 'a title', description: 'a description'});
+                    let todo = new ToDo({title: 'a title'});
                     todo.save((err, todo) => {
                         return chai.request(server)
                         .get('/todo/' + todo.id.toString())
@@ -255,7 +250,6 @@ describe('Todos', () => {
                             expect(response).to.have.status(200);
                             expect(response.body._id.toString()).to.be.equal(todo.id);
                             expect(response.body).to.have.property('title');
-                            expect(response.body).to.have.property('description');
                         }))
                     })
                 });
@@ -275,4 +269,5 @@ describe('Todos', () => {
         });
     });
 
+});
 });
