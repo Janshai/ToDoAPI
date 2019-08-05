@@ -10,7 +10,7 @@ let options = {
 
 const app            = express();
 
-const port = 8000;
+const port = process.env.PORT || 8000;
 let mongoUri = "";
 if(config.util.getEnv('NODE_ENV') !== 'production') {
     const mongTestServer = require('mongodb-memory-server');
