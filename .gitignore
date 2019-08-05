@@ -284,4 +284,8 @@ Icon
 .AppleDesktop
 Network Trash Folder
 Temporary Items
-.apdisk
+.apdis
+
+# db details
+config/
+node_modules/
