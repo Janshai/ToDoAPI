@@ -1,4 +1,4 @@
-const mongTestServer = require('mongodb-memory-server');
+
 const express        = require('express');
 const bodyParser     = require('body-parser');
 const config         = require('config');
@@ -13,6 +13,7 @@ const app            = express();
 const port = 8000;
 let mongoUri = "";
 if(config.util.getEnv('NODE_ENV') !== 'prod') {
+    const mongTestServer = require('mongodb-memory-server');
     const mongoServer = new mongTestServer.MongoMemoryServer();
     mongoServer.getConnectionString().then((uri) => {
         mongoose.connect(uri, options);
