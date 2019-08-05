@@ -262,7 +262,6 @@ describe('Todos', () => {
                         .then(response => {
                             expect(response).to.have.status(400);
                             expect(response.body).to.have.property('error');
-
                         })
                 });
             });
