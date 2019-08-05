@@ -30,8 +30,8 @@ if(config.util.getEnv('NODE_ENV') !== 'production') {
     });
 
 } else {
-    mongoUri = config.DBHost
-    mongoose.connect(config.DBHost, options);
+    mongoUri = process.env.DBHost
+    mongoose.connect(mongoUri, options);
 }
 mongoose.connection.once('open', () => {
     console.log('MongoDB successfully connected');

@@ -7,7 +7,7 @@
     "test": "nyc mocha --timeout 10000 --exit",
     "no-coverage-test": "mocha --timeout 10000 --exit",
     "dev": "SET_NODE_ENV=dev && nodemon server.js",
-    "start": "SET_NODE_ENV=prod && node server.js"
+    "start": "SET_NODE_ENV=production && node server.js"
   },
   "repository": {
     "type": "git",
