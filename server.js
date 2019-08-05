@@ -12,7 +12,7 @@ const app            = express();
 
 const port = 8000;
 let mongoUri = "";
-if(config.util.getEnv('NODE_ENV') !== 'prod') {
+if(config.util.getEnv('NODE_ENV') !== 'production') {
     const mongTestServer = require('mongodb-memory-server');
     const mongoServer = new mongTestServer.MongoMemoryServer();
     mongoServer.getConnectionString().then((uri) => {
