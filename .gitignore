@@ -287,5 +287,5 @@ Temporary Items
 .apdis
 
 # db details
-config/db.js
+config/
 node_modules/
