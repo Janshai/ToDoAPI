@@ -38,12 +38,12 @@ function getTodoWithId(req, res) {
             jsonResponse.error = err.message;
             res.status(400)
         } else if(todo === null){
-            jsonResponse.error = "Item with id $(id.toString()) does not exist";
+            jsonResponse.error = "Item with id " + id.toString() + " does not exist";
             res.status(400);
         } else {
             jsonResponse.message = "Found Todo!";
             jsonResponse.success = true;
-            jsonResponse.error = "Item with id $(id.toString()) does not exist";
+            jsonResponse.error = null;
             jsonResponse.todo = result;
         }
         res.json(jsonResponse);
@@ -72,7 +72,8 @@ function getTodo(req, res) {
 };
 
 function putTodo(req, res) {
-    Todo.findById({_id: req.params.id}, (err, todo) => {
+    let id = req.params.id
+    Todo.findById({_id: id}, (err, todo) => {
         var jsonResponse = {
             message: "Failed to find Todo",
             success: false,
@@ -84,7 +85,7 @@ function putTodo(req, res) {
             jsonResponse.error = err.message;
             res.status(400).json(jsonResponse);
         } else if (todo === null){
-            jsonResponse.error = "Item with id $(req.params.id.toString()) does not exist"
+            jsonResponse.error = "Item with id " + id.toString() + " does not exist"
             res.status(400).json(jsonResponse);
         } else {
             Object.assign(todo, req.body)
