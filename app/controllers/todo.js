@@ -25,7 +25,8 @@ function postTodo(req, res) {
 };
 
 function getTodoWithId(req, res) {
-    Todo.findById(req.params.id, (err, result) => {
+    let id = req.params.id;
+    Todo.findById(id, (err, result) => {
         var jsonResponse = {
             message: "Failed to find Todo",
             success: false,
@@ -37,12 +38,12 @@ function getTodoWithId(req, res) {
             jsonResponse.error = err.message;
             res.status(400)
         } else if(todo === null){
-            jsonResponse.error = "Item with id $(req.params.id.toString()) does not exist";
+            jsonResponse.error = "Item with id $(id.toString()) does not exist";
             res.status(400);
         } else {
             jsonResponse.message = "Found Todo!";
             jsonResponse.success = true;
-            jsonResponse.error = "Item with id $(req.params.id.toString()) does not exist";
+            jsonResponse.error = "Item with id $(id.toString()) does not exist";
             jsonResponse.todo = result;
         }
         res.json(jsonResponse);
