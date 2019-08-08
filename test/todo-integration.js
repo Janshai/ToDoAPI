@@ -29,7 +29,7 @@ describe('Todos', () => {
 
     describe('Create a Todo', () => {
         describe('With correct and complete input', () => {
-            it('Returns a 200 response, an ID, and the database stores the Todo correctly', () => {
+            it('Returns a 200 response with a body in the correct format, the todo, and the database stores the Todo correctly', () => {
                 const input = {
                     title: 'Test',
                 };
@@ -39,16 +39,19 @@ describe('Todos', () => {
                     .send(input)
                     .then(response => {
                         expect(response).to.have.status(200);
-                        expect(response.body).to.have.property('_id');
-                        id = response.body._id;
-                        return ToDo.find(input);
+                        expect(response.body).to.have.property('message');
+                        expect(response.body).to.have.property('success');
+                        expect(response.body.success).to.be.equal(true);
+                        expect(response.body).to.have.property('error');
+                        expect(response.body.error).to.be.equal(null);
+                        expect(response.body).to.have.property('todo');
+                        expect(response.body.todo).to.have.property('_id');
+                        id = response.body.todo._id;
+                        return ToDo.findById(id);
                     })
                     .then(result => {
-                        expect(result).to.have.lengthOf(1);
-                        const item = result[0];
-                        expect(item.title).to.be.equal(input.title);
-                        expect(item._id.toString()).to.be.equal(id);
-
+                        expect(result.title).to.be.equal(input.title);
+                        expect(result._id.toString()).to.be.equal(id);
                     });
             });
         });
@@ -105,18 +108,23 @@ describe('Todos', () => {
 
     describe('Delete a todo', () => {
         describe('Delete a todo that exists', () => {
-            it('Returns a 200 response, and the todo is no longer in the database', done => {
-                let todo = new ToDo({ title: 'test', description: 'this is a test'});
+            it('Returns a 200 response with a body in the correct format, and the todo is no longer in the database', done => {
+                let todo = new ToDo({ title: 'test'});
                 todo.save((err, todo) => {
                     chai.request(app)
                         .delete('/todo/' + todo._id)
                         .send(todo)
-                        .then(res => {
-                            expect(res).to.have.status(200);
-                            return ToDo.find(todo);
+                        .then(response => {
+                            expect(response).to.have.status(200);
+                            expect(response.body).to.have.property('message');
+                            expect(response.body).to.have.property('success');
+                            expect(response.body.success).to.be.equal(true);
+                            expect(response.body).to.have.property('error');
+                            expect(response.body.error).to.be.equal(null);
+                            return ToDo.findById(todo._id);
                         })
                         .then(result => {
-                            expect(result).to.have.lengthOf(0);
+                            expect(result).to.be.equal(null);
                         })
                         done();
                 })
@@ -150,6 +158,12 @@ describe('Todos', () => {
                             .send(updatedTodo)
                             .then(response => {
                                 expect(response).to.have.status(200);
+                                expect(response.body).to.have.property('message');
+                                expect(response.body).to.have.property('success');
+                                expect(response.body.success).to.be.equal(true);
+                                expect(response.body).to.have.property('error');
+                                expect(response.body.error).to.be.equal(null);
+                                expect(response.body).to.have.property('todo');
                                 return ToDo.findById(todo.id);
                             })
                             .then(result => {
@@ -198,10 +212,17 @@ describe('Todos', () => {
                         })
                     .then(response => {
                         expect(response).to.have.status(400);
+                        expect(response.body).to.have.property('message');
+                        expect(response.body).to.have.property('success');
+                        expect(response.body.success).to.be.equal(false);
                         expect(response.body).to.have.property('error');
+                        expect(response.body.error).to.be.not.equal(null);
+                        expect(response.body).to.have.property('todo');
+                        expect(response.body.todo).to.be.equal(null);
                     })
             })
         });
+    });
 
     describe('Get todos', () => {
         describe('Get all todos', () => {
@@ -211,8 +232,14 @@ describe('Todos', () => {
                     .get('/todo')
                     .end((err, response) => {
                         expect(response).to.have.status(200);
-                        expect(response.body).to.be.a('array');
-                        expect(response.body).to.have.lengthOf(0);
+                        expect(response.body).to.have.property('message');
+                        expect(response.body).to.have.property('success');
+                        expect(response.body.success).to.be.equal(true);
+                        expect(response.body).to.have.property('error');
+                        expect(response.body.error).to.be.equal(null);
+                        expect(response.body).to.have.property('todos');
+                        expect(response.body.todos).to.be.a('array');
+                        expect(response.body.todos).to.have.lengthOf(0);
                     });
                 });
             });
@@ -227,8 +254,14 @@ describe('Todos', () => {
                         .get('/todo')
                         .end((err, response) => {
                             expect(response).to.have.status(200);
-                            expect(response.body).to.be.a('array');
-                            expect(response.body).to.have.lengthOf(3);
+                            expect(response.body).to.have.property('message');
+                            expect(response.body).to.have.property('success');
+                            expect(response.body.success).to.be.equal(true);
+                            expect(response.body).to.have.property('error');
+                            expect(response.body.error).to.be.equal(null);
+                            expect(response.body).to.have.property('todos');
+                            expect(response.body.todos).to.be.a('array');
+                            expect(response.body.todos).to.have.lengthOf(3);
 
                         });
                     });
@@ -248,8 +281,14 @@ describe('Todos', () => {
                         .then((response => {
 
                             expect(response).to.have.status(200);
-                            expect(response.body._id.toString()).to.be.equal(todo.id);
-                            expect(response.body).to.have.property('title');
+                            expect(response.body).to.have.property('message');
+                            expect(response.body).to.have.property('success');
+                            expect(response.body.success).to.be.equal(true);
+                            expect(response.body).to.have.property('error');
+                            expect(response.body.error).to.be.equal(null);
+                            expect(response.body).to.have.property('todo');
+                            expect(response.body.todo._id.toString()).to.be.equal(todo.id);
+                            expect(response.body.todo).to.have.property('title');
                         }))
                     })
                 });
@@ -261,12 +300,17 @@ describe('Todos', () => {
                         .send()
                         .then(response => {
                             expect(response).to.have.status(400);
+                            expect(response.body).to.have.property('message');
+                            expect(response.body).to.have.property('success');
+                            expect(response.body.success).to.be.equal(false);
                             expect(response.body).to.have.property('error');
+                            expect(response.body.error).to.be.not.equal(null);
+                            expect(response.body).to.have.property('todo');
+                            expect(response.body.todo).to.be.equal(null);
                         })
                 });
             });
         });
     });
 
-});
 });
