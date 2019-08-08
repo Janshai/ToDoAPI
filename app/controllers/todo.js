@@ -8,15 +8,15 @@ function postTodo(req, res) {
     let query = todo.save(todo, (err, result) => {
         if(err) {
             console.log(err);
-            jsonResponse.message("Failed to create Todo");
+            jsonResponse.message = "Failed to create Todo";
             jsonResponse.success = false;
             jsonResponse.error = err.message;
             jsonResponse.todo = null;
             res.status(400)
         } else {
-            jsonResponse.message("Created Todo!");
+            jsonResponse.message = "Created Todo!";
             jsonResponse.success = true;
-            jsonResponse.error = err.message;
+            jsonResponse.error = null;
             jsonResponse.todo = result;
         }
         res.json(jsonResponse);
@@ -37,7 +37,7 @@ function getTodoWithId(req, res) {
             console.log(err);
             jsonResponse.error = err.message;
             res.status(400)
-        } else if(todo === null){
+        } else if(result === null){
             jsonResponse.error = "Item with id " + id.toString() + " does not exist";
             res.status(400);
         } else {
