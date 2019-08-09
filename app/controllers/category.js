@@ -9,20 +9,16 @@ function postCategory(req, res) {
     let query = category.save(category, (err, result) => {
         if(err) {
             console.log(err)
-            jsonResponse = {
-                message: "Creating Category Unsuccessful",
-                success: false,
-                error: err.message,
-                category: null
-            };
+            jsonResponse.message = "Failed to create Category";
+            jsonResponse.success = false;
+            jsonResponse.error = err.message;
+            jsonResponse.category = null;
             res.status(400)
         } else {
-            jsonResponse = {
-                message: "Successfully Created Category!",
-                success: true,
-                errors: null,
-                category: result
-            };
+            jsonResponse.message = "Created Category!";
+            jsonResponse.success = true;
+            jsonResponse.error = null;
+            jsonResponse.category = result;
         }
         res.json(jsonResponse);
     });
@@ -32,18 +28,19 @@ function putCategory(req, res) {
     var jsonResponse = {
         message: "Updating Category Unsuccessful",
         success: false,
-        error: "",
-        category: null
+        error: ""
     };
     let id = req.params.id;
     Category.findById({_id: id}, (err, category) => {
         if(err) {
             console.log(err)
             jsonResponse.error = err.message;
+            jsonResponse.category = null
             res.status(400);
             res.json(jsonResponse)
         } else if (category === null){
             jsonResponse.error = "Item with id $(id.toString()) does not exist";
+            jsonResponse.category = null
             res.status(400);
             res.json(jsonResponse)
         } else {
