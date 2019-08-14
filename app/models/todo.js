@@ -5,7 +5,7 @@ let Schema = mongoose.Schema;
 let TodoSchema = new Schema(
   {
     title: { type: String, required: true },
-    categories: { type: [Schema.Types.ObjectID], default: []},
+    categories: { type: [String], default: []},
     createdAt: { type: Date, default: Date.now },
   },
   {
