@@ -3,8 +3,10 @@ let Todo = require('../models/todo');
 
 function postTodo(req, res) {
     var jsonResponse = {};
+    //// TODO: Check that the given categories are actual categories
     const todo = new Todo(req.body);
-    let validation = todo.validateSync();
+    // TODO: Do something with this validation. And do it across all endpoints?
+    // let validation = todo.validateSync();
     let query = todo.save(todo, (err, result) => {
         if(err) {
             console.log(err);
