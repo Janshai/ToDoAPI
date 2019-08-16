@@ -2,59 +2,107 @@ let mongoose = require('mongoose');
 let Todo = require('../models/todo');
 
 function postTodo(req, res) {
+    var jsonResponse = {};
+    //// TODO: Check that the given categories are actual categories
     const todo = new Todo(req.body);
-    let validation = todo.validateSync();
+    // TODO: Do something with this validation. And do it across all endpoints?
+    // let validation = todo.validateSync();
     let query = todo.save(todo, (err, result) => {
         if(err) {
-            res.status(400).send(err);
+            console.log(err);
+            jsonResponse.message = "Failed to create Todo";
+            jsonResponse.success = false;
+            jsonResponse.error = err.message;
+            jsonResponse.todo = null;
+            res.status(400)
         } else {
-            res.json(result);
+            jsonResponse.message = "Created Todo!";
+            jsonResponse.success = true;
+            jsonResponse.error = null;
+            jsonResponse.todo = result;
         }
+        res.json(jsonResponse);
     });
 
 };
 
 function getTodoWithId(req, res) {
-    Todo.findById(req.params.id, (err, todo) => {
+    let id = req.params.id;
+    Todo.findById(id, (err, result) => {
+        var jsonResponse = {
+            message: "Failed to find Todo",
+            success: false,
+            error: "",
+            todo: null
+        };
         if(err) {
-            res.send(err)
-        } else if(todo === null){
+            console.log(err);
+            jsonResponse.error = err.message;
+            res.status(400)
+        } else if(result === null){
+            jsonResponse.error = "Item with id " + id.toString() + " does not exist";
             res.status(400);
-            res.json({error: `Item with id $(req.params.id.toString()) does not exist`});
         } else {
-            res.json(todo);
+            jsonResponse.message = "Found Todo!";
+            jsonResponse.success = true;
+            jsonResponse.error = null;
+            jsonResponse.todo = result;
         }
-
+        res.json(jsonResponse);
     });
 };
 
 function getTodo(req, res) {
+    var jsonResponse = {};
     let query = Todo.find({});
     query.exec((err, result) => {
         if (err) {
-            res.send(err);
+            console.log(err);
+            jsonResponse.message = "Failed to find Todos";
+            jsonResponse.success = false;
+            jsonResponse.error = err.message;
+            jsonResponse.todos = null;
+            res.status(400)
         } else {
-            res.json(result);
+            jsonResponse.message = "Found Todos!";
+            jsonResponse.success = true;
+            jsonResponse.error = null;
+            jsonResponse.todos = result;
         }
+        res.json(jsonResponse);
     });
 };
 
 function putTodo(req, res) {
-    Todo.findById({_id: req.params.id}, (err, todo) => {
+    let id = req.params.id
+    Todo.findById({_id: id}, (err, todo) => {
+        var jsonResponse = {
+            message: "Failed to find Todo",
+            success: false,
+            error: "",
+            todo: null
+        };
         if(err) {
-            res.send(err)
+            console.log(err);
+            jsonResponse.error = err.message;
+            res.status(400).json(jsonResponse);
         } else if (todo === null){
-            res.status(400);
-            res.json({error: `Item with id $(req.params.id.toString()) does not exist`});
+            jsonResponse.error = "Item with id " + id.toString() + " does not exist"
+            res.status(400).json(jsonResponse);
         } else {
             Object.assign(todo, req.body)
-            todo.save((err, todo) => {
+            todo.save((err, result) => {
                 if(err) {
-                    res.send(err);
+                    console.log(err);
+                    jsonResponse.error = err.message;
+                    res.status(400);
                 } else {
-                    res.json({ message: 'Todo updated!', todo });
+                    jsonResponse.message = "Todo Updated!";
+                    jsonResponse.success = true;
+                    jsonResponse.error = null;
+                    jsonResponse.todo = result;
                 }
-
+                res.json(jsonResponse);
             });
         }
 
@@ -62,17 +110,24 @@ function putTodo(req, res) {
 };
 
 function deleteTodo(req, res) {
+    var jsonResponse = {}
     Todo.deleteOne({_id : req.params.id}, (err, result) => {
         if (err) {
-            res.status(400).send(err);
+            console.log(err);
+            jsonResponse.message = "Failed to Delete Todo";
+            jsonResponse.success = false;
+            jsonResponse.error = err.message;
+            res.status(400)
         } else {
-            res.json({ message: "Todo successfully deleted!", result });
+            jsonResponse.message = "Successfully Deleted Todo!";
+            jsonResponse.success = true;
+            jsonResponse.error = null;
         }
+        jsonResponse.todo = null;
+        res.json(jsonResponse);
 
     });
 
 };
-
-
 
 module.exports = {deleteTodo, putTodo, getTodo, getTodoWithId, postTodo};

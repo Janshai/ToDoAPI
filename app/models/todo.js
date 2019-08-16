@@ -1,10 +1,11 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
-//book schema definition
+//todo schema definition
 let TodoSchema = new Schema(
   {
     title: { type: String, required: true },
+    categories: { type: [String], default: []},
     createdAt: { type: Date, default: Date.now },
   },
   {

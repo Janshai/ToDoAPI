@@ -1,0 +1,11 @@
+{
+    message: String
+    success: Bool
+    errors: Errors
+    todo:
+        {
+            _id: UUID
+            title: String
+            createdAt: Date
+        }
+}
