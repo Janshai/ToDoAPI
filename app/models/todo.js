@@ -6,6 +6,8 @@ let TodoSchema = new Schema(
   {
     title: { type: String, required: true },
     categories: { type: [String], default: []},
+    points: {type: Number, default: 1},
+    priority: {type: String, required: false},
     createdAt: { type: Date, default: Date.now },
   },
   {
