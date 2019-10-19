@@ -53,8 +53,9 @@ function getTodoWithId(req, res) {
 };
 
 function getTodo(req, res) {
+    let completed = req.query.completed || false
     var jsonResponse = {};
-    let query = Todo.find({});
+    let query = Todo.find({completed: completed});
     query.exec((err, result) => {
         if (err) {
             console.log(err);
