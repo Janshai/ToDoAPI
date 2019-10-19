@@ -46,6 +46,6 @@ app.use(bodyParser.json({ type: 'application/json'}));
 require('./app/routes/index.js')(app);
 
 app.listen(port)
-console.log("We are live");
+console.log("We are live at " + port);
 
 module.exports = app;
