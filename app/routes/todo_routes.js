@@ -13,6 +13,7 @@ module.exports = function(app) {
 
     // UPDATE
     app.put('/todo/:id', todo.putTodo);
+    app.put('/todo/complete/:id', todo.completeTodo);
 
     // DELETE
     app.delete('/todo/:id', todo.deleteTodo);
