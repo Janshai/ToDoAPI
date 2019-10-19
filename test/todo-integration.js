@@ -323,9 +323,9 @@ describe('Todos', () => {
 
             describe('When there are some todos', () => {
                 it('it should return an array of todos', () => {
-                    let todos = [{ title: 'todo 1'},
-                                 { title: 'todo 2'},
-                                 { title: 'todo 3'}];
+                    let todos = [{ title: 'todo 1', completed: false},
+                                 { title: 'todo 2', completed: false},
+                                 { title: 'todo 3', completed: false}];
                     ToDo.collection.insertMany(todos, (err, docs) =>{
                         chai.request(server)
                         .get('/todo')
