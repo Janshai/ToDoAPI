@@ -53,8 +53,9 @@ function getTodoWithId(req, res) {
 };
 
 function getTodo(req, res) {
+    let completed = req.query.completed || false
     var jsonResponse = {};
-    let query = Todo.find({});
+    let query = Todo.find({completed: completed});
     query.exec((err, result) => {
         if (err) {
             console.log(err);
@@ -109,6 +110,44 @@ function putTodo(req, res) {
     });
 };
 
+function completeTodo(req, res) {
+    let id = req.params.id
+    let now = Date()
+    Todo.findById({_id: id}, (err, todo) => {
+        var jsonResponse = {
+            message: "Failed to find Todo",
+            success: false,
+            error: "",
+            todo: null
+        };
+        if(err) {
+            console.log(err);
+            jsonResponse.error = err.message;
+            res.status(400).json(jsonResponse);
+        } else if (todo === null){
+            jsonResponse.error = "Item with id " + id.toString() + " does not exist"
+            res.status(400).json(jsonResponse);
+        } else {
+            todo.completed = true;
+            todo.completedAt = now
+            todo.save((err, result) => {
+                if(err) {
+                    console.log(err);
+                    jsonResponse.error = err.message;
+                    res.status(400);
+                } else {
+                    jsonResponse.message = "Todo Completed!";
+                    jsonResponse.success = true;
+                    jsonResponse.error = null;
+                    jsonResponse.todo = result;
+                }
+                res.json(jsonResponse);
+            });
+        }
+
+    });
+}
+
 function deleteTodo(req, res) {
     var jsonResponse = {}
     Todo.deleteOne({_id : req.params.id}, (err, result) => {
@@ -130,4 +169,4 @@ function deleteTodo(req, res) {
 
 };
 
-module.exports = {deleteTodo, putTodo, getTodo, getTodoWithId, postTodo};
+module.exports = {deleteTodo, putTodo, getTodo, getTodoWithId, postTodo, completeTodo};
